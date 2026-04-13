@@ -17,6 +17,6 @@ export interface ProgressRecord {
 }
 
 export const CLASS_MAP: Record<Grade, number[]> = {
-  1: [6, 7, 8, 9, 10, 11],
+  1: [7, 8, 9, 10, 11],
   3: [8, 9, 10],
 };
