@@ -28,6 +28,49 @@
   font-weight: 500;
 }
 
+/* 날짜 네비게이션 */
+.date-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.date-arrow {
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  color: var(--text-sub);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background 0.12s, color 0.12s;
+}
+
+.date-arrow:active {
+  background: var(--border);
+  color: var(--text);
+}
+
+.date-label {
+  padding: 4px 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-sub);
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: background 0.12s, color 0.12s;
+}
+
+.date-label.today {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.date-label:active {
+  background: var(--border);
+}
+
 .todo-tabs {
   display: flex;
   align-items: center;

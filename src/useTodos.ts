@@ -33,14 +33,14 @@ export function useTodos() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
   }, [todos]);
 
-  function addTodo(text: string, category: TodoCategory) {
+  function addTodo(text: string, category: TodoCategory, date?: string) {
     if (!text.trim()) return;
     const newTodo: Todo = {
       id: Date.now().toString(),
       category,
       text: text.trim(),
       done: false,
-      date: today(),
+      date: date ?? today(),
       createdAt: new Date().toISOString(),
     };
     setTodos(prev => [newTodo, ...prev]);

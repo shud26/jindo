@@ -4,7 +4,7 @@ import "./TodoBanner.css";
 
 interface Props {
   todos: Todo[];
-  onAdd: (text: string, category: TodoCategory) => void;
+  onAdd: (text: string, category: TodoCategory, date: string) => void;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
 }
@@ -14,48 +14,53 @@ const CATEGORY_LABEL: Record<TodoCategory, string> = {
   class: "수업",
 };
 
-function formatDate(dateStr: string): string {
-  // dateStr: YYYY-MM-DD
-  const [y, m, d] = dateStr.split("-");
-  const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
-  const day = weekdays[new Date(`${y}-${m}-${d}`).getDay()];
-  return `${Number(m)}/${Number(d)} (${day})`;
+function toDateStr(date: Date): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
 }
 
-function todayStr(): string {
-  return new Date().toLocaleDateString("ko-KR", {
-    year: "numeric", month: "2-digit", day: "2-digit",
-  }).replace(/\. /g, "-").replace(".", "").trim();
+function formatDateLabel(dateStr: string): string {
+  const today = toDateStr(new Date());
+  const tomorrow = toDateStr(new Date(Date.now() + 86400000));
+  const yesterday = toDateStr(new Date(Date.now() - 86400000));
+  const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
+  const d = new Date(dateStr + "T00:00:00");
+  const dow = weekdays[d.getDay()];
+  const label = `${d.getMonth() + 1}/${d.getDate()} (${dow})`;
+
+  if (dateStr === today) return `오늘 · ${label}`;
+  if (dateStr === tomorrow) return `내일 · ${label}`;
+  if (dateStr === yesterday) return `어제 · ${label}`;
+  if (dateStr > today) return `${label}`;
+  return label;
 }
 
 export default function TodoBanner({ todos, onAdd, onToggle, onDelete }: Props) {
   const [tab, setTab] = useState<TodoCategory>("homeroom");
   const [input, setInput] = useState("");
-  const [showAll, setShowAll] = useState(false);
+  const [offset, setOffset] = useState(0); // 0=오늘, -1=어제, +1=내일
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const today = todayStr();
-  const filtered = todos.filter(t => t.category === tab);
-  const todayTodos = filtered.filter(t => t.date === today);
-  const olderTodos = filtered.filter(t => t.date !== today);
+  const today = toDateStr(new Date());
+  const selectedDate = toDateStr(new Date(Date.now() + offset * 86400000));
+  const isToday = selectedDate === today;
 
-  const doneCnt = filtered.filter(t => t.done).length;
-  const totalCnt = filtered.length;
+  const byDate = todos.filter(t => t.category === tab && t.date === selectedDate);
+  const doneCnt = byDate.filter(t => t.done).length;
+
+  // 탭별 전체 미완료 개수 (날짜 무관)
+  function undoneCount(cat: TodoCategory) {
+    return todos.filter(t => t.category === cat && !t.done).length;
+  }
 
   function handleAdd() {
     if (!input.trim()) return;
-    onAdd(input, tab);
+    onAdd(input, tab, selectedDate);
     setInput("");
     inputRef.current?.focus();
   }
-
-  // 날짜별 그룹핑 (오래된 항목용)
-  const olderGrouped = olderTodos.reduce<Record<string, Todo[]>>((acc, t) => {
-    if (!acc[t.date]) acc[t.date] = [];
-    acc[t.date].push(t);
-    return acc;
-  }, {});
-  const olderDates = Object.keys(olderGrouped).sort().reverse();
 
   return (
     <section className="todo-banner">
@@ -63,12 +68,20 @@ export default function TodoBanner({ todos, onAdd, onToggle, onDelete }: Props) 
       <div className="todo-header">
         <div className="todo-title-row">
           <span className="todo-title">✅ 할 일</span>
-          <span className="todo-date">
-            {new Date().toLocaleDateString("ko-KR", {
-              month: "long", day: "numeric", weekday: "short"
-            })}
-          </span>
+          {/* 날짜 네비게이션 */}
+          <div className="date-nav">
+            <button className="date-arrow" onClick={() => setOffset(o => o - 1)}>‹</button>
+            <button
+              className={`date-label ${isToday ? "today" : ""}`}
+              onClick={() => setOffset(0)}
+            >
+              {formatDateLabel(selectedDate)}
+            </button>
+            <button className="date-arrow" onClick={() => setOffset(o => o + 1)}>›</button>
+          </div>
         </div>
+
+        {/* 담임/수업 탭 */}
         <div className="todo-tabs">
           {(["homeroom", "class"] as TodoCategory[]).map(c => (
             <button
@@ -77,45 +90,28 @@ export default function TodoBanner({ todos, onAdd, onToggle, onDelete }: Props) 
               onClick={() => setTab(c)}
             >
               {CATEGORY_LABEL[c]}
-              {todos.filter(t => t.category === c && !t.done).length > 0 && (
-                <span className="todo-badge">
-                  {todos.filter(t => t.category === c && !t.done).length}
-                </span>
+              {undoneCount(c) > 0 && (
+                <span className="todo-badge">{undoneCount(c)}</span>
               )}
             </button>
           ))}
-          {totalCnt > 0 && (
-            <span className="todo-progress">{doneCnt}/{totalCnt}</span>
+          {byDate.length > 0 && (
+            <span className="todo-progress">{doneCnt}/{byDate.length}</span>
           )}
         </div>
       </div>
 
-      {/* 오늘 할 일 */}
+      {/* 할 일 목록 */}
       <ul className="todo-list">
-        {todayTodos.length === 0 && (
-          <li className="todo-empty">오늘 {CATEGORY_LABEL[tab]} 할 일이 없어요</li>
+        {byDate.length === 0 && (
+          <li className="todo-empty">
+            {formatDateLabel(selectedDate).split("·")[0].trim()} {CATEGORY_LABEL[tab]} 할 일이 없어요
+          </li>
         )}
-        {todayTodos.map(t => (
+        {byDate.map(t => (
           <TodoItem key={t.id} todo={t} onToggle={onToggle} onDelete={onDelete} />
         ))}
       </ul>
-
-      {/* 이전 날짜 항목 (펼치기) */}
-      {olderTodos.length > 0 && (
-        <button className="show-older" onClick={() => setShowAll(v => !v)}>
-          {showAll ? "▲ 이전 항목 접기" : `▼ 이전 항목 ${olderTodos.length}개 보기`}
-        </button>
-      )}
-      {showAll && olderDates.map(date => (
-        <div key={date} className="older-group">
-          <div className="older-date">{formatDate(date)}</div>
-          <ul className="todo-list">
-            {olderGrouped[date].map(t => (
-              <TodoItem key={t.id} todo={t} onToggle={onToggle} onDelete={onDelete} />
-            ))}
-          </ul>
-        </div>
-      ))}
 
       {/* 입력 */}
       <div className="todo-input-row">
