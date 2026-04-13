@@ -30,13 +30,19 @@ export function useRecords() {
     return records.find((r) => r.grade === grade && r.classNum === classNum);
   }
 
-  function getRecentRecords(limit = 10): ProgressRecord[] {
-    return records.slice(0, limit);
+  function getClassRecords(grade: Grade, classNum: number): ProgressRecord[] {
+    return records.filter((r) => r.grade === grade && r.classNum === classNum);
   }
 
   function deleteRecord(id: string) {
     setRecords((prev) => prev.filter((r) => r.id !== id));
   }
 
-  return { records, addRecord, getLastRecord, getRecentRecords, deleteRecord };
+  function updateRecord(id: string, data: Omit<ProgressRecord, "id" | "timestamp">) {
+    setRecords((prev) =>
+      prev.map((r) => r.id === id ? { ...r, ...data } : r)
+    );
+  }
+
+  return { records, addRecord, getLastRecord, getClassRecords, deleteRecord, updateRecord };
 }

@@ -2,21 +2,22 @@ import { useState } from "react";
 import { type Grade, CLASS_MAP } from "./types";
 import { useRecords } from "./useRecords";
 import ClassGrid from "./components/ClassGrid";
-import ProgressForm from "./components/ProgressForm";
-import RecordList from "./components/RecordList";
+import ClassSheet from "./components/ClassSheet";
 import "./App.css";
 
 export default function App() {
   const [grade, setGrade] = useState<Grade>(1);
   const [selectedClass, setSelectedClass] = useState<number | null>(null);
-  const { addRecord, getLastRecord, getRecentRecords, deleteRecord } = useRecords();
+  const { addRecord, getLastRecord, getClassRecords, deleteRecord, updateRecord } = useRecords();
 
   const classes = CLASS_MAP[grade];
 
-  function handleSave(unit: number, lesson: number, memo: string) {
-    if (selectedClass === null) return;
-    addRecord({ grade, classNum: selectedClass, unit, lesson, memo });
-    setSelectedClass(null);
+  function handleSave(unit: number, lesson: number, memo: string, editId?: string) {
+    if (editId) {
+      updateRecord(editId, { grade, classNum: selectedClass!, unit, lesson, memo });
+    } else {
+      addRecord({ grade, classNum: selectedClass!, unit, lesson, memo });
+    }
   }
 
   return (
@@ -43,18 +44,15 @@ export default function App() {
           getLastRecord={getLastRecord}
           onSelect={setSelectedClass}
         />
-        <RecordList
-          records={getRecentRecords(8)}
-          onDelete={deleteRecord}
-        />
       </main>
 
       {selectedClass !== null && (
-        <ProgressForm
+        <ClassSheet
           grade={grade}
           classNum={selectedClass}
-          lastRecord={getLastRecord(grade, selectedClass)}
+          records={getClassRecords(grade, selectedClass)}
           onSave={handleSave}
+          onDelete={deleteRecord}
           onClose={() => setSelectedClass(null)}
         />
       )}
