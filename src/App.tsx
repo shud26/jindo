@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { type Grade, CLASS_MAP } from "./types";
 import { useRecords } from "./useRecords";
+import { useTodos } from "./useTodos";
 import ClassGrid from "./components/ClassGrid";
 import ClassSheet from "./components/ClassSheet";
+import TodoBanner from "./components/TodoBanner";
 import "./App.css";
 
 export default function App() {
   const [grade, setGrade] = useState<Grade>(1);
   const [selectedClass, setSelectedClass] = useState<number | null>(null);
   const { addRecord, getLastRecord, getClassRecords, deleteRecord, updateRecord } = useRecords();
+  const { todos, addTodo, toggleTodo, deleteTodo } = useTodos();
 
   const classes = CLASS_MAP[grade];
 
@@ -38,6 +41,12 @@ export default function App() {
       </header>
 
       <main className="main">
+        <TodoBanner
+          todos={todos}
+          onAdd={addTodo}
+          onToggle={toggleTodo}
+          onDelete={deleteTodo}
+        />
         <ClassGrid
           grade={grade}
           classes={classes}
