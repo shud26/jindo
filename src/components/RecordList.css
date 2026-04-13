@@ -1,11 +1,13 @@
-.record-section {}
+.record-section {
+  padding-bottom: 40px;
+}
 
 .record-title {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--text-sub);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   margin-bottom: 8px;
 }
 
@@ -13,21 +15,34 @@
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 6px;
 }
 
+/* 아이템 */
 .record-item {
   background: var(--surface);
   border-radius: var(--radius-sm);
-  padding: 12px 14px;
+  box-shadow: 0 0 0 1px var(--border);
+  overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+
+.record-item.open {
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+/* 탭 가능한 헤더 */
+.record-header {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  box-shadow: 0 0 0 1px var(--border);
+  padding: 14px 14px;
+  text-align: left;
 }
 
-.record-main {
+.record-summary {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -36,30 +51,31 @@
 }
 
 .record-class {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
+  color: var(--text);
   flex-shrink: 0;
 }
 
 .record-jindo {
-  font-size: 14px;
-  color: var(--primary);
+  font-size: 15px;
   font-weight: 600;
+  color: var(--primary);
   flex-shrink: 0;
 }
 
-.record-memo {
-  font-size: 12px;
+.record-memo-preview {
+  font-size: 13px;
   color: var(--text-sub);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.record-right {
+.record-meta {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
 }
 
@@ -68,13 +84,73 @@
   color: var(--text-sub);
 }
 
-.record-delete {
-  font-size: 18px;
-  color: var(--border);
-  padding: 2px 4px;
+.record-chevron {
+  font-size: 20px;
+  color: var(--text-sub);
   line-height: 1;
+  display: inline-block;
+  transform: rotate(90deg);
+  transition: transform 0.2s;
 }
 
-.record-delete:active {
+.record-chevron.up {
+  transform: rotate(-90deg);
+}
+
+/* 펼쳐진 상세 영역 */
+.record-detail {
+  border-top: 1px solid var(--border);
+  padding: 14px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: expandDown 0.18s ease-out;
+}
+
+@keyframes expandDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.detail-row {
+  display: flex;
+  gap: 12px;
+}
+
+.detail-label {
+  font-size: 13px;
+  color: var(--text-sub);
+  font-weight: 500;
+  width: 64px;
+  flex-shrink: 0;
+}
+
+.detail-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  word-break: break-all;
+}
+
+.detail-empty {
+  color: var(--text-sub);
+  font-weight: 400;
+}
+
+.record-delete-btn {
+  margin-top: 4px;
+  padding: 10px;
+  width: 100%;
+  background: #fff1f0;
   color: #ff3b30;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-align: center;
+  transition: background 0.15s;
+}
+
+.record-delete-btn:active {
+  background: #ffe0de;
 }
