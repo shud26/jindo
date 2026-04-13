@@ -15,11 +15,11 @@ export default function App() {
 
   const classes = CLASS_MAP[grade];
 
-  function handleSave(unit: number, lesson: number, memo: string, editId?: string) {
+  function handleSave(memo: string, editId?: string) {
     if (editId) {
-      updateRecord(editId, { grade, classNum: selectedClass!, unit, lesson, memo });
+      updateRecord(editId, { grade, classNum: selectedClass!, memo });
     } else {
-      addRecord({ grade, classNum: selectedClass!, unit, lesson, memo });
+      addRecord({ grade, classNum: selectedClass!, memo });
     }
   }
 

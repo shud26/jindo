@@ -38,7 +38,7 @@ export default function ClassGrid({ grade, classes, getLastRecord, onSelect }: P
               <div className="class-label">{grade}-{num}반</div>
               {last ? (
                 <div className="class-last">
-                  <span className="last-jindo">{last.unit}단원 {last.lesson}차시</span>
+                  <span className="last-jindo">{last.memo || "메모 없음"}</span>
                   <span className="last-time">{formatTime(last.timestamp)}</span>
                 </div>
               ) : (

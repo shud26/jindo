@@ -44,7 +44,6 @@ export default function RecordList({ records, onDelete }: Props) {
               <button className="record-header" onClick={() => toggle(r.id)}>
                 <div className="record-summary">
                   <span className="record-class">{r.grade}-{r.classNum}반</span>
-                  <span className="record-jindo">{r.unit}단원 {r.lesson}차시</span>
                   {!isOpen && r.memo && (
                     <span className="record-memo-preview">{r.memo}</span>
                   )}
@@ -61,10 +60,6 @@ export default function RecordList({ records, onDelete }: Props) {
                   <div className="detail-row">
                     <span className="detail-label">학년/반</span>
                     <span className="detail-value">{r.grade}학년 {r.classNum}반</span>
-                  </div>
-                  <div className="detail-row">
-                    <span className="detail-label">진도</span>
-                    <span className="detail-value">{r.unit}단원 {r.lesson}차시</span>
                   </div>
                   {r.memo ? (
                     <div className="detail-row">

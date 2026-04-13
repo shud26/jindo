@@ -10,8 +10,6 @@ export interface ProgressRecord {
   id: string;
   grade: Grade;
   classNum: number;
-  unit: number;
-  lesson: number;
   memo: string;
   timestamp: string; // ISO string
 }

@@ -5,8 +5,8 @@ import "./ClassSheet.css";
 interface Props {
   grade: Grade;
   classNum: number;
-  records: ProgressRecord[];           // 해당 반 기록 전체
-  onSave: (unit: number, lesson: number, memo: string, editId?: string) => void;
+  records: ProgressRecord[];
+  onSave: (memo: string, editId?: string) => void;
   onDelete: (id: string) => void;
   onClose: () => void;
 }
@@ -26,37 +26,26 @@ function formatDateTime(iso: string): string {
 }
 
 export default function ClassSheet({ grade, classNum, records, onSave, onDelete, onClose }: Props) {
-  const last = records[0];
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [unit, setUnit]   = useState(last?.unit ?? 1);
-  const [lesson, setLesson] = useState(last ? last.lesson + 1 : 1);
-  const [memo, setMemo]   = useState("");
-  const unitRef = useRef<HTMLInputElement>(null);
+  const [memo, setMemo] = useState("");
+  const memoRef = useRef<HTMLInputElement>(null);
 
-  // 수정 모드 진입 시 해당 기록으로 폼 채우기
   function startEdit(r: ProgressRecord) {
     setEditingId(r.id);
-    setUnit(r.unit);
-    setLesson(r.lesson);
     setMemo(r.memo);
-    unitRef.current?.focus();
-    // 폼으로 스크롤
-    unitRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    memoRef.current?.focus();
+    memoRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   function cancelEdit() {
     setEditingId(null);
-    setUnit(last?.unit ?? 1);
-    setLesson(last ? last.lesson + 1 : 1);
     setMemo("");
   }
 
   function handleSave() {
-    if (unit < 1 || lesson < 1) return;
-    onSave(unit, lesson, memo.trim(), editingId ?? undefined);
+    if (!memo.trim()) return;
+    onSave(memo.trim(), editingId ?? undefined);
     setEditingId(null);
-    setUnit(unit);
-    setLesson(lesson + 1);
     setMemo("");
   }
 
@@ -65,7 +54,7 @@ export default function ClassSheet({ grade, classNum, records, onSave, onDelete,
   }
 
   useEffect(() => {
-    unitRef.current?.focus();
+    memoRef.current?.focus();
   }, []);
 
   return (
@@ -87,31 +76,11 @@ export default function ClassSheet({ grade, classNum, records, onSave, onDelete,
             </div>
           )}
 
-          <div className="form-row">
-            <div className="form-field">
-              <label>단원</label>
-              <div className="num-input">
-                <button onClick={() => setUnit(u => Math.max(1, u - 1))}>−</button>
-                <input ref={unitRef} type="number" min={1} value={unit}
-                  onChange={e => setUnit(Number(e.target.value))} />
-                <button onClick={() => setUnit(u => u + 1)}>＋</button>
-              </div>
-            </div>
-            <div className="form-field">
-              <label>차시</label>
-              <div className="num-input">
-                <button onClick={() => setLesson(l => Math.max(1, l - 1))}>−</button>
-                <input type="number" min={1} value={lesson}
-                  onChange={e => setLesson(Number(e.target.value))} />
-                <button onClick={() => setLesson(l => l + 1)}>＋</button>
-              </div>
-            </div>
-          </div>
-
           <input
+            ref={memoRef}
             className="memo-input"
             type="text"
-            placeholder="메모 (선택)"
+            placeholder="수업 메모 입력..."
             value={memo}
             onChange={e => setMemo(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleSave()}
@@ -122,7 +91,7 @@ export default function ClassSheet({ grade, classNum, records, onSave, onDelete,
           </button>
         </div>
 
-        {/* 해당 반 기록 목록 */}
+        {/* 기록 목록 */}
         {records.length > 0 && (
           <div className="sheet-records">
             <div className="records-label">기록 ({records.length})</div>
@@ -130,8 +99,7 @@ export default function ClassSheet({ grade, classNum, records, onSave, onDelete,
               {records.map((r) => (
                 <li key={r.id} className={`record-row ${editingId === r.id ? "active" : ""}`}>
                   <div className="record-info">
-                    <span className="record-jindo">{r.unit}단원 {r.lesson}차시</span>
-                    {r.memo && <span className="record-memo">{r.memo}</span>}
+                    <span className="record-memo">{r.memo || "메모 없음"}</span>
                     <span className="record-time">{formatDateTime(r.timestamp)}</span>
                   </div>
                   <div className="record-actions">
