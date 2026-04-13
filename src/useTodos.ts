@@ -14,16 +14,21 @@ export interface Todo {
 const STORAGE_KEY = "jindo_todos";
 
 function today(): string {
-  return new Date().toLocaleDateString("ko-KR", {
-    year: "numeric", month: "2-digit", day: "2-digit",
-  }).replace(/\. /g, "-").replace(".", "").trim();
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 export function useTodos() {
   const [todos, setTodos] = useState<Todo[]>(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
+      if (!raw) return [];
+      const parsed: Todo[] = JSON.parse(raw);
+      // 구형 todo에 date 없는 경우 오늘 날짜로 보정
+      return parsed.map(t => t.date ? t : { ...t, date: today() });
     } catch {
       return [];
     }
