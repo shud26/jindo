@@ -1,0 +1,49 @@
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  background: var(--bg);
+}
+
+.header {
+  background: var(--surface);
+  padding: 16px 16px 0;
+  box-shadow: 0 0 0 1px var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+  margin-bottom: 12px;
+}
+
+.grade-tabs {
+  display: flex;
+  gap: 2px;
+}
+
+.grade-tab {
+  flex: 1;
+  padding: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-sub);
+  border-bottom: 3px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.grade-tab.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.main {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
