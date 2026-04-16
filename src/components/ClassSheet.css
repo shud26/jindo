@@ -140,7 +140,7 @@
 }
 
 .memo-input {
-  padding: 11px 14px;
+  padding: 12px 14px;
   border-radius: var(--radius-sm);
   border: none;
   background: var(--bg);
@@ -149,6 +149,10 @@
   outline: none;
   color: var(--text);
   width: 100%;
+  resize: vertical;
+  min-height: 100px;
+  line-height: 1.6;
+  font-family: inherit;
 }
 
 .memo-input:focus {

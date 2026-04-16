@@ -28,7 +28,7 @@ function formatDateTime(iso: string): string {
 export default function ClassSheet({ grade, classNum, records, onSave, onDelete, onClose }: Props) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [memo, setMemo] = useState("");
-  const memoRef = useRef<HTMLInputElement>(null);
+  const memoRef = useRef<HTMLTextAreaElement>(null);
 
   function startEdit(r: ProgressRecord) {
     setEditingId(r.id);
@@ -76,14 +76,16 @@ export default function ClassSheet({ grade, classNum, records, onSave, onDelete,
             </div>
           )}
 
-          <input
+          <textarea
             ref={memoRef}
             className="memo-input"
-            type="text"
-            placeholder="수업 메모 입력..."
+            placeholder="수업 메모 입력... (Ctrl+Enter로 저장)"
             value={memo}
             onChange={e => setMemo(e.target.value)}
-            onKeyDown={e => e.key === "Enter" && handleSave()}
+            onKeyDown={e => {
+              if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) handleSave();
+            }}
+            rows={4}
           />
 
           <button className="save-btn" onClick={handleSave}>
