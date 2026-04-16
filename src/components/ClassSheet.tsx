@@ -34,7 +34,6 @@ export default function ClassSheet({ grade, classNum, records, onSave, onDelete,
     setEditingId(r.id);
     setMemo(r.memo);
     memoRef.current?.focus();
-    memoRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   function cancelEdit() {
@@ -47,10 +46,7 @@ export default function ClassSheet({ grade, classNum, records, onSave, onDelete,
     onSave(memo.trim(), editingId ?? undefined);
     setEditingId(null);
     setMemo("");
-  }
-
-  function handleBackdrop(e: React.MouseEvent) {
-    if (e.target === e.currentTarget) onClose();
+    memoRef.current?.focus();
   }
 
   useEffect(() => {
@@ -58,44 +54,41 @@ export default function ClassSheet({ grade, classNum, records, onSave, onDelete,
   }, []);
 
   return (
-    <div className="sheet-backdrop" onClick={handleBackdrop}>
-      <div className="sheet">
-        <div className="sheet-handle" />
+    <div className="page">
+      {/* 헤더 */}
+      <header className="page-header">
+        <button className="page-back" onClick={onClose}>← 뒤로</button>
+        <h2 className="page-title">{grade}-{classNum}반</h2>
+        <div style={{ width: 60 }} />
+      </header>
 
-        <div className="sheet-header">
-          <h2 className="sheet-title">{grade}-{classNum}반</h2>
-          <button className="sheet-close" onClick={onClose}>✕</button>
-        </div>
+      {/* 입력 폼 */}
+      <div className={`page-form ${editingId ? "editing" : ""}`}>
+        {editingId && (
+          <div className="edit-banner">
+            ✏️ 기록 수정 중
+            <button className="edit-cancel" onClick={cancelEdit}>취소</button>
+          </div>
+        )}
+        <textarea
+          ref={memoRef}
+          className="memo-input"
+          placeholder="수업 진도 메모 입력..."
+          value={memo}
+          onChange={e => setMemo(e.target.value)}
+          rows={5}
+        />
+        <button className="save-btn" onClick={handleSave}>
+          {editingId ? "수정 완료 ✓" : "저장 ✓"}
+        </button>
+      </div>
 
-        {/* 입력 폼 */}
-        <div className={`sheet-form ${editingId ? "editing" : ""}`}>
-          {editingId && (
-            <div className="edit-banner">
-              ✏️ 기록 수정 중
-              <button className="edit-cancel" onClick={cancelEdit}>취소</button>
-            </div>
-          )}
-
-          <textarea
-            ref={memoRef}
-            className="memo-input"
-            placeholder="수업 메모 입력... (Ctrl+Enter로 저장)"
-            value={memo}
-            onChange={e => setMemo(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) handleSave();
-            }}
-            rows={4}
-          />
-
-          <button className="save-btn" onClick={handleSave}>
-            {editingId ? "수정 완료 ✓" : "저장 ✓"}
-          </button>
-        </div>
-
-        {/* 기록 목록 */}
-        {records.length > 0 && (
-          <div className="sheet-records">
+      {/* 기록 목록 */}
+      <div className="page-records">
+        {records.length === 0 ? (
+          <div className="records-empty">아직 기록이 없습니다</div>
+        ) : (
+          <>
             <div className="records-label">기록 ({records.length})</div>
             <ul className="records-list">
               {records.map((r) => (
@@ -111,7 +104,7 @@ export default function ClassSheet({ grade, classNum, records, onSave, onDelete,
                 </li>
               ))}
             </ul>
-          </div>
+          </>
         )}
       </div>
     </div>

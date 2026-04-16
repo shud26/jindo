@@ -54,6 +54,10 @@
 }
 
 /* 하단 네비게이션 */
+.bottom-nav.hidden {
+  display: none;
+}
+
 .bottom-nav {
   position: fixed;
   bottom: 0;

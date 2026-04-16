@@ -87,7 +87,7 @@ export default function App() {
         )}
       </main>
 
-      {/* 반 시트 */}
+      {/* 반 상세 페이지 */}
       {selectedClass !== null && (
         <ClassSheet
           grade={grade}
@@ -99,8 +99,8 @@ export default function App() {
         />
       )}
 
-      {/* 하단 네비게이션 */}
-      <nav className="bottom-nav">
+      {/* 하단 네비게이션 (반 선택 중엔 숨김) */}
+      <nav className={`bottom-nav ${selectedClass !== null ? "hidden" : ""}`}>
         <button className={`nav-item ${tab === "class" ? "active" : ""}`} onClick={() => setTab("class")}>
           <span className="nav-icon">📚</span>
           <span className="nav-label">수업</span>
