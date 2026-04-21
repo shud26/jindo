@@ -1,7 +1,7 @@
 .todo-banner {
   background: var(--surface);
   border-radius: var(--radius);
-  box-shadow: 0 0 0 1px var(--border);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
@@ -19,7 +19,8 @@
 
 .todo-title {
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: -0.2px;
 }
 
 .todo-date {
@@ -55,7 +56,7 @@
 .date-label {
   padding: 4px 8px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--text-sub);
   border-radius: 6px;
   white-space: nowrap;
@@ -64,11 +65,11 @@
 
 .date-label.today {
   color: var(--primary);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .date-label:active {
-  background: var(--border);
+  background: var(--bg);
 }
 
 .todo-tabs {
@@ -84,7 +85,7 @@
   gap: 5px;
   padding: 8px 14px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-sub);
   border-bottom: 2px solid transparent;
   transition: color 0.15s, border-color 0.15s;
@@ -96,7 +97,7 @@
 }
 
 .todo-badge {
-  background: #ff3b30;
+  background: #ef4444;
   color: #fff;
   font-size: 11px;
   font-weight: 700;
@@ -111,6 +112,7 @@
   font-size: 12px;
   color: var(--text-sub);
   padding: 0 4px 8px;
+  font-weight: 500;
 }
 
 /* 리스트 */
@@ -134,13 +136,13 @@
 }
 
 .todo-item.done {
-  opacity: 0.5;
+  opacity: 0.45;
 }
 
 .todo-check {
   width: 24px;
   height: 24px;
-  border-radius: 6px;
+  border-radius: 7px;
   box-shadow: 0 0 0 2px var(--border);
   font-size: 14px;
   font-weight: 700;
@@ -161,6 +163,7 @@
 .todo-text {
   flex: 1;
   font-size: 14px;
+  font-weight: 600;
   color: var(--text);
   line-height: 1.4;
   word-break: break-all;
@@ -179,13 +182,14 @@
   line-height: 1;
 }
 
-.todo-delete:active { color: #ff3b30; }
+.todo-delete:active { color: #ef4444; }
 
 /* 이전 항목 */
 .show-older {
   width: 100%;
   padding: 8px 14px;
   font-size: 12px;
+  font-weight: 600;
   color: var(--text-sub);
   text-align: left;
   border-top: 1px solid var(--border);
@@ -198,7 +202,7 @@
 .older-date {
   padding: 8px 14px 2px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-sub);
 }
 
@@ -217,12 +221,13 @@
   border: none;
   background: transparent;
   font-size: 14px;
+  font-weight: 600;
   color: var(--text);
   outline: none;
   padding: 4px 0;
 }
 
-.todo-input::placeholder { color: var(--text-sub); }
+.todo-input::placeholder { color: var(--text-sub); font-weight: 500; }
 
 .todo-add-btn {
   width: 30px;
@@ -237,6 +242,7 @@
   justify-content: center;
   flex-shrink: 0;
   line-height: 1;
+  transition: background 0.15s;
 }
 
 .todo-add-btn:active { background: var(--primary-dark); }

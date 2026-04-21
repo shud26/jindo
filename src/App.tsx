@@ -3,13 +3,15 @@ import { type Grade, CLASS_MAP } from "./types";
 import { useRecords } from "./useRecords";
 import { useTodos } from "./useTodos";
 import { useEconMemos } from "./useEconMemos";
+import { useEvents } from "./useEvents";
 import ClassGrid from "./components/ClassGrid";
 import ClassSheet from "./components/ClassSheet";
 import TodoBanner from "./components/TodoBanner";
 import EconPage from "./components/EconPage";
+import CalendarPage from "./components/CalendarPage";
 import "./App.css";
 
-type Tab = "class" | "econ" | "todo";
+type Tab = "class" | "cal" | "econ" | "todo";
 
 export default function App() {
   const [tab, setTab] = useState<Tab>("class");
@@ -19,6 +21,7 @@ export default function App() {
   const { addRecord, getLastRecord, getClassRecords, deleteRecord, updateRecord } = useRecords();
   const { todos, addTodo, toggleTodo, deleteTodo } = useTodos();
   const { memos, addMemo, deleteMemo } = useEconMemos();
+  const { events, addEvent, deleteEvent } = useEvents();
 
   const classes = CLASS_MAP[grade];
 
@@ -49,6 +52,11 @@ export default function App() {
           </div>
         </header>
       )}
+      {tab === "cal" && (
+        <header className="header header-simple">
+          <h1 className="title">📅 캘린더</h1>
+        </header>
+      )}
       {tab === "econ" && (
         <header className="header header-simple">
           <h1 className="title">📰 경제 메모</h1>
@@ -68,6 +76,13 @@ export default function App() {
             classes={classes}
             getLastRecord={getLastRecord}
             onSelect={setSelectedClass}
+          />
+        )}
+        {tab === "cal" && (
+          <CalendarPage
+            events={events}
+            onAdd={addEvent}
+            onDelete={deleteEvent}
           />
         )}
         {tab === "econ" && (
@@ -104,6 +119,10 @@ export default function App() {
         <button className={`nav-item ${tab === "class" ? "active" : ""}`} onClick={() => setTab("class")}>
           <span className="nav-icon">📚</span>
           <span className="nav-label">수업</span>
+        </button>
+        <button className={`nav-item ${tab === "cal" ? "active" : ""}`} onClick={() => setTab("cal")}>
+          <span className="nav-icon">📅</span>
+          <span className="nav-label">캘린더</span>
         </button>
         <button className={`nav-item ${tab === "econ" ? "active" : ""}`} onClick={() => setTab("econ")}>
           <span className="nav-icon">📰</span>
